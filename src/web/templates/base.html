@@ -1,0 +1,89 @@
+<!-- src/web/templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Distributed Task Scheduler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">Task Scheduler</div>
+        {% if session.user_id %}
+        <div class="navbar-user">
+            Welcome, {{ session.user_id }}
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+        {% endif %}
+    </nav>
+    
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
+<!-- src/web/templates/login.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="login-container">
+    <h2>Login</h2>
+    {% if error %}
+    <div class="error-message">{{ error }}</div>
+    {% endif %}
+    <form method="POST" action="{{ url_for('login') }}" class="login-form">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="submit-btn">Login</button>
+    </form>
+</div>
+{% endblock %}
+
+<!-- src/web/templates/dashboard.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard">
+    <div class="task-submission">
+        <h2>Submit New Task</h2>
+        <form id="taskForm" class="task-form">
+            <div class="form-group">
+                <label for="taskType">Task Type:</label>
+                <select id="taskType" name="taskType" required>
+                    <option value="computation">Computation</option>
+                    <option value="io">I/O Operation</option>
+                    <option value="data_processing">Data Processing</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="taskData">Task Data:</label>
+                <textarea id="taskData" name="taskData" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="priority">Priority:</label>
+                <select id="priority" name="priority">
+                    <option value="0">High</option>
+                    <option value="1">Medium</option>
+                    <option value="2">Low</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">Submit Task</button>
+        </form>
+    </div>
+
+    <div class="task-list">
+        <h2>Active Tasks</h2>
+        <div id="activeTasks" class="tasks-container"></div>
+    </div>
+</div>
+{% endblock %}

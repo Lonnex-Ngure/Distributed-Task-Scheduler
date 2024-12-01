@@ -1,0 +1,246 @@
+/* src/static/css/style.css */
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --background-color: #ecf0f1;
+    --error-color: #e74c3c;
+    --success-color: #2ecc71;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    line-height: 1.6;
+}
+
+.navbar {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.logout-btn {
+    color: white;
+    text-decoration: none;
+    margin-left: 1rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.submit-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.submit-btn:hover {
+    background-color: #2980b9;
+}
+
+.error-message {
+    background-color: var(--error-color);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+}
+
+.task-submission,
+.task-list {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tasks-container {
+    margin-top: 1rem;
+}
+
+.task-item {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.task-item.pending {
+    border-left: 4px solid #f1c40f;
+}
+
+.task-item.running {
+    border-left: 4px solid var(--secondary-color);
+}
+
+.task-item.completed {
+    border-left: 4px solid var(--success-color);
+}
+
+.task-item.failed {
+    border-left: 4px solid var(--error-color);
+}
+
+.task-item {
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.task-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.task-item.pending .task-status {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.task-item.running .task-status {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.task-item.completed .task-status {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.task-item.failed .task-status {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.progress-bar {
+    background-color: #f3f4f6;
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+    margin-top: 1rem;
+    position: relative;
+}
+
+.progress {
+    background-color: var(--secondary-color);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    right: 0;
+    top: -1.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+.notification.success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.notification.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.5s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

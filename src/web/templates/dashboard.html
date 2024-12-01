@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Task Scheduler</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: var(--primary);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand i {
+            color: var(--secondary);
+        }
+
+        .user-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--light);
+            border-radius: 6px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .task-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-running {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-failed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--secondary);
+            transition: width 0.3s ease;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <i class="fas fa-tasks"></i>
+                Advanced Task Scheduler
+            </div>
+            <div class="user-nav">
+                <span>Welcome, Admin</span>
+                <a href="/logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeTasks">0</div>
+                <div class="stat-label">Active Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="failedTasks">0</div>
+                <div class="stat-label">Failed</div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-plus-circle"></i>
+                        New Task
+                    </h2>
+                </div>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskType">Task Type</label>
+                        <select id="taskType" class="form-control" required>
+                            <option value="data_processing">Data Processing</option>
+                            <option value="image_processing">Image Processing</option>
+                            <option value="file_operation">File Operation</option>
+                            <option value="api_integration">API Integration</option>
+                            <option value="computation">Computation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskData">Task Data</label>
+                        <textarea id="taskData" class="form-control" rows="6" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority" class="form-control" required>
+                            <option value="1">High</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Low</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Submit Task
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-list"></i>
+                        Active Tasks
+                    </h2>
+                </div>
+                <div id="tasksList" class="task-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let taskCount = {
+            total: 0,
+            active: 0,
+            completed: 0,
+            failed: 0
+        };
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            updateStats();
+        });
+
+        function updateStats() {
+            document.getElementById('totalTasks').textContent = taskCount.total;
+            document.getElementById('activeTasks').textContent = taskCount.active;
+            document.getElementById('completedTasks').textContent = taskCount.completed;
+            document.getElementById('failedTasks').textContent = taskCount.failed;
+        }
+
+        function createTaskCard(taskId, taskData) {
+            const card = document.createElement('div');
+            card.id = `task-${taskId}`;
+            card.className = 'task-card';
+            
+            card.innerHTML = `
+                <span class="task-status status-pending">Pending</span>
+                <h3>${taskData.type}</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="task-meta">
+                    <span>ID: ${taskId}</span>
+                    <span>Priority: ${['High', 'Medium', 'Low'][taskData.priority - 1]}</span>
+                </div>
+            `;
+            
+            document.getElementById('tasksList').prepend(card);
+            
+            taskCount.total++;
+            taskCount.active++;
+            updateStats();
+        }
+
+        function updateTaskStatus(taskId, status, progress) {
+            const card = document.getElementById(`task-${taskId}`);
+            if (!card) return;
+
+            const statusSpan = card.querySelector('.task-status');
+            const progressBar = card.querySelector('.progress-fill');
+
+            statusSpan.className = `task-status status-${status.toLowerCase()}`;
+            statusSpan.textContent = status;
+            
+            if (progress !== undefined) {
+                progressBar.style.width = `${progress}%`;
+            }
+
+            if (status === 'Completed' || status === 'Failed') {
+                taskCount.active--;
+                if (status === 'Completed') taskCount.completed++;
+                if (status === 'Failed') taskCount.failed++;
+                updateStats();
+                
+                setTimeout(() => {
+                    card.remove();
+                }, 5000);
+            }
+        }
+
+        document.getElementById('taskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const taskData = {
+                type: document.getElementById('taskType').value,
+                data: document.getElementById('taskData').value,
+                priority: parseInt(document.getElementById('priority').value)
+            };
+
+            try {
+                const response = await fetch('/api/tasks', {
+                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(taskData)
+                });
+
+                const result = await response.json();
+                if (result.task_id) {
+                    createTaskCard(result.task_id, taskData);
+                    socket.emit('subscribe_task', result.task_id);
+                }
+            } catch (error) {
+                console.error('Error submitting task:', error);
+                alert('Failed to submit task. Please try again.');
+            }
+        });
+
+        socket.on('task_update', (data) => {
+            updateTaskStatus(data.task_id, data.status, data.progress);
+        });
+
+        // Add some sample tasks for demonstration
+        setTimeout(() => {
+            const sampleTasks = [
+                {task_id: 'demo1', type: 'data_processing', priority: 1, status: 'running', progress: 45},
+                {task_id: 'demo2', type: 'image_processing', priority: 2, status: 'pending', progress: 0},
+                {task_id: 'demo3', type: 'file_operation', priority: 3, status: 'completed', progress: 100}
+            ];
+
+            sampleTasks.forEach(task => {
+                createTaskCard(task.task_id, task);
+                updateTaskStatus(task.task_id, task.status, task.progress);
+            });
+        }, 1000);
+    </script>
+    <script>
+        // Add this right after your existing socket connection code
+        socket.on('task_update', function(data) {
+            console.log('Task update received:', data);
+            const taskCard = document.getElementById(`task-${data.task_id}`);
+            if (taskCard) {
+                const progressBar = taskCard.querySelector('.progress-fill');
+                const statusSpan = taskCard.querySelector('.task-status');
+                
+                if (progressBar && data.progress !== undefined) {
+                    progressBar.style.width = `${data.progress}%`;
+                }
+                
+                if (statusSpan) {
+                    statusSpan.className = `task-status status-${data.status.toLowerCase()}`;
+                    statusSpan.textContent = data.status;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
